@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    printf("🎉🎉🎉恭喜你，绕过所有防护手段🎉🎉🎉");
 }
 
 

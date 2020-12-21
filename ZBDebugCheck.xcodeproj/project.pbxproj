@@ -14,6 +14,9 @@
 		9C8EC35D258DF312007530E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C8EC35C258DF312007530E9 /* Assets.xcassets */; };
 		9C8EC360258DF312007530E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C8EC35E258DF312007530E9 /* LaunchScreen.storyboard */; };
 		9C8EC363258DF312007530E9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC362258DF312007530E9 /* main.m */; };
+		9C8EC36C258DF587007530E9 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC36A258DF587007530E9 /* fishhook.c */; };
+		9C8EC373258DF596007530E9 /* AntiDebugCrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC36F258DF596007530E9 /* AntiDebugCrack.m */; };
+		9C8EC374258DF596007530E9 /* AntiDebugCheck.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC370258DF596007530E9 /* AntiDebugCheck.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +32,13 @@
 		9C8EC35F258DF312007530E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C8EC361258DF312007530E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9C8EC362258DF312007530E9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		9C8EC36A258DF587007530E9 /* fishhook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fishhook.c; sourceTree = "<group>"; };
+		9C8EC36B258DF587007530E9 /* fishhook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fishhook.h; sourceTree = "<group>"; };
+		9C8EC36E258DF596007530E9 /* AntiDebugCheck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AntiDebugCheck.h; sourceTree = "<group>"; };
+		9C8EC36F258DF596007530E9 /* AntiDebugCrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AntiDebugCrack.m; sourceTree = "<group>"; };
+		9C8EC370258DF596007530E9 /* AntiDebugCheck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AntiDebugCheck.m; sourceTree = "<group>"; };
+		9C8EC371258DF596007530E9 /* ptrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ptrace.h; sourceTree = "<group>"; };
+		9C8EC372258DF596007530E9 /* AntiDebugCrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AntiDebugCrack.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +75,8 @@
 				9C8EC351258DF30E007530E9 /* AppDelegate.m */,
 				9C8EC353258DF30E007530E9 /* SceneDelegate.h */,
 				9C8EC354258DF30E007530E9 /* SceneDelegate.m */,
+				9C8EC36D258DF596007530E9 /* AntiDebug */,
+				9C8EC369258DF587007530E9 /* fishhook */,
 				9C8EC356258DF30E007530E9 /* ViewController.h */,
 				9C8EC357258DF30E007530E9 /* ViewController.m */,
 				9C8EC359258DF30E007530E9 /* Main.storyboard */,
@@ -74,6 +86,27 @@
 				9C8EC362258DF312007530E9 /* main.m */,
 			);
 			path = ZBDebugCheck;
+			sourceTree = "<group>";
+		};
+		9C8EC369258DF587007530E9 /* fishhook */ = {
+			isa = PBXGroup;
+			children = (
+				9C8EC36A258DF587007530E9 /* fishhook.c */,
+				9C8EC36B258DF587007530E9 /* fishhook.h */,
+			);
+			path = fishhook;
+			sourceTree = "<group>";
+		};
+		9C8EC36D258DF596007530E9 /* AntiDebug */ = {
+			isa = PBXGroup;
+			children = (
+				9C8EC372258DF596007530E9 /* AntiDebugCrack.h */,
+				9C8EC36F258DF596007530E9 /* AntiDebugCrack.m */,
+				9C8EC36E258DF596007530E9 /* AntiDebugCheck.h */,
+				9C8EC370258DF596007530E9 /* AntiDebugCheck.m */,
+				9C8EC371258DF596007530E9 /* ptrace.h */,
+			);
+			path = AntiDebug;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,10 +179,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C8EC373258DF596007530E9 /* AntiDebugCrack.m in Sources */,
 				9C8EC358258DF30E007530E9 /* ViewController.m in Sources */,
+				9C8EC36C258DF587007530E9 /* fishhook.c in Sources */,
 				9C8EC352258DF30E007530E9 /* AppDelegate.m in Sources */,
 				9C8EC363258DF312007530E9 /* main.m in Sources */,
 				9C8EC355258DF30E007530E9 /* SceneDelegate.m in Sources */,
+				9C8EC374258DF596007530E9 /* AntiDebugCheck.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +328,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = R49G474L9D;
 				INFOPLIST_FILE = ZBDebugCheck/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -309,6 +346,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = R49G474L9D;
 				INFOPLIST_FILE = ZBDebugCheck/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

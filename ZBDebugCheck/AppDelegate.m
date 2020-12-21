@@ -7,6 +7,10 @@
 //
 
 #import "AppDelegate.h"
+/// 反调试
+#import "AntiDebugCheck.h"
+/// 反反调试
+#import "AntiDebugCrack.h"
 
 @interface AppDelegate ()
 
@@ -16,10 +20,33 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+
+    ///反调试
+#pragma mark - ptrace
+    /// ptrace 阻止调试器附加
+    [AntiDebugCheck antiDebugCheck_ptrace];
+
+#pragma mark - sysctl
+    /// sysctl 检查当前进程的调试标记
+    [AntiDebugCheck antiDebugCheck_sysctl];
+
+#pragma mark - syscall
+    /// syscall -> ptrace
+    [AntiDebugCheck antiDebugCheck_syscall_ptrace];
+    /// syscall -> sysctl
+    [AntiDebugCheck antiDebugCheck_syscall_sysctl];
+
+#pragma mark - dlsym
+    /// dlsym -> ptrace
+    [AntiDebugCheck antiDebugCheck_dlsym_ptrace];
+    /// dlsym -> sysctl
+    [AntiDebugCheck antiDebugCheck_dlsym_sysctl];
+    /// dlsym -> syscall -> ptrace
+    [AntiDebugCheck antiDebugCheck_dlsym_syscall_ptrace];
+    /// dlsym -> syscall -> sysctl
+    [AntiDebugCheck antiDebugCheck_dlsym_syscall_sysctl];
     return YES;
 }
-
 
 #pragma mark - UISceneSession lifecycle
 
