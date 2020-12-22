@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    printf("🎉🎉🎉恭喜你，绕过所有防护手段🎉🎉🎉");
+    printf("\n🎉🎉🎉恭喜你，绕过所有防护手段🎉🎉🎉\n");
 }
 
 
