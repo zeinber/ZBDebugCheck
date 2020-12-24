@@ -39,6 +39,21 @@ NS_ASSUME_NONNULL_BEGIN
 /// dlsym -> syscall -> sysctl
 + (void)antiDebugCheck_dlsym_syscall_sysctl;
 
+#pragma mark - svc
+/// svc -> ptrace
++ (void)antiDebugCheck_svc_ptrace;
+/// svc -> syscall -> ptrace
++ (void)antiDebugCheck_svc_syscall_ptrace;
+/// svc -> sysctl
++ (void)antiDebugCheck_svc_sysctl;
+
+#pragma mark - isatty
+/// isatty
++ (void)antiDebugCheck_isatty;
+
+#pragma mark - ioctl
+/// ioctl
++ (void)antiDebugCheck_ioctl;
 @end
 
 NS_ASSUME_NONNULL_END
