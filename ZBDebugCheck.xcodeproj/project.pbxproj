@@ -17,6 +17,7 @@
 		9C8EC36C258DF587007530E9 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC36A258DF587007530E9 /* fishhook.c */; };
 		9C8EC373258DF596007530E9 /* AntiDebugCrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC36F258DF596007530E9 /* AntiDebugCrack.m */; };
 		9C8EC374258DF596007530E9 /* AntiDebugCheck.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C8EC370258DF596007530E9 /* AntiDebugCheck.m */; };
+		9CB7C3F42594676B00FFB28C /* AntiDebugPatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB7C3F32594676B00FFB28C /* AntiDebugPatch.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,8 @@
 		9C8EC370258DF596007530E9 /* AntiDebugCheck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AntiDebugCheck.m; sourceTree = "<group>"; };
 		9C8EC371258DF596007530E9 /* ptrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ptrace.h; sourceTree = "<group>"; };
 		9C8EC372258DF596007530E9 /* AntiDebugCrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AntiDebugCrack.h; sourceTree = "<group>"; };
+		9CB7C3F22594676B00FFB28C /* AntiDebugPatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AntiDebugPatch.h; sourceTree = "<group>"; };
+		9CB7C3F32594676B00FFB28C /* AntiDebugPatch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AntiDebugPatch.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +80,7 @@
 				9C8EC354258DF30E007530E9 /* SceneDelegate.m */,
 				9C8EC36D258DF596007530E9 /* AntiDebug */,
 				9C8EC369258DF587007530E9 /* fishhook */,
+				9CB7C3F12594675A00FFB28C /* patch */,
 				9C8EC356258DF30E007530E9 /* ViewController.h */,
 				9C8EC357258DF30E007530E9 /* ViewController.m */,
 				9C8EC359258DF30E007530E9 /* Main.storyboard */,
@@ -107,6 +111,15 @@
 				9C8EC371258DF596007530E9 /* ptrace.h */,
 			);
 			path = AntiDebug;
+			sourceTree = "<group>";
+		};
+		9CB7C3F12594675A00FFB28C /* patch */ = {
+			isa = PBXGroup;
+			children = (
+				9CB7C3F22594676B00FFB28C /* AntiDebugPatch.h */,
+				9CB7C3F32594676B00FFB28C /* AntiDebugPatch.m */,
+			);
+			path = patch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,6 +198,7 @@
 				9C8EC352258DF30E007530E9 /* AppDelegate.m in Sources */,
 				9C8EC363258DF312007530E9 /* main.m in Sources */,
 				9C8EC355258DF30E007530E9 /* SceneDelegate.m in Sources */,
+				9CB7C3F42594676B00FFB28C /* AntiDebugPatch.m in Sources */,
 				9C8EC374258DF596007530E9 /* AntiDebugCheck.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,6 +347,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeinber.ZBDebugCheck;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -351,6 +366,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeinber.ZBDebugCheck;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
