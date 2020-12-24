@@ -11,6 +11,11 @@
 #import <sys/sysctl.h>
 #import "ptrace.h"
 #import <sys/syscall.h>
+#import <dlfcn.h>
+#import <mach-o/dyld.h>
+#import <mach/vm_map.h>
+#import <mach/vm_region.h>
+#import "AntiDebugPatch.h"
 
 @implementation AntiDebugCrack
 #pragma mark - 入口函数
@@ -22,10 +27,7 @@ __attribute__((constructor)) static void entry(){
         [AntiDebugCrack antiDebugCheck_sysctl];
         [AntiDebugCrack antiDebugCheck_syscall_summary];
         [AntiDebugCrack antiDebugCheck_dlsym_summary];
-//        [AntiDebugCrack antiDebugCheck_dlsym_ptrace];
-//        [AntiDebugCrack antiDebugCheck_dlsym_sysctl];
-//        [AntiDebugCrack antiDebugCheck_dlsym_syscall_ptrace];
-//        [AntiDebugCrack antiDebugCheck_dlsym_syscall_sysctl];
+        [AntiDebugCrack antiDebugCheck_svc_summary];
     });
 }
 
@@ -80,10 +82,10 @@ static syscall_ptr_t orig_syscall = NULL;
 int my_syscall(int code, ...);
 int my_syscall(int code, ...) {
     //检测到syscall调用ptrace，直接返回
+    char *stack[8];
     va_list arg;
     va_start(arg, code);
-    va_list narg;
-    va_copy(narg, arg);
+    memcpy(stack, arg, 8 * 8);
     int request = va_arg(arg, int);
     va_end(arg);
     if (code == SYS_ptrace) {
@@ -98,7 +100,7 @@ int my_syscall(int code, ...) {
         va_start(sysctl_arg, code);
         int *name = va_arg(sysctl_arg, int *);
         u_int namelen = va_arg(sysctl_arg, u_int);
-
+        
         
         //传入需要构造的参数
         int newname[4];//指定査询信息的数组
@@ -123,11 +125,7 @@ int my_syscall(int code, ...) {
         }
         return ret;
     }
-    va_list orig_arg;
-    va_start(orig_arg, code);
-    int ret = orig_syscall(code, orig_arg);
-    va_end(orig_arg);
-    return ret;
+    return orig_syscall(code,stack[0],stack[1],stack[2],stack[3],stack[4],stack[5],stack[6],stack[7]);
 }
 
 + (void)antiDebugCheck_syscall_summary {
@@ -157,6 +155,110 @@ void* my_dlsym(void* __handle, const char* __symbol){
 
 + (void)antiDebugCheck_dlsym_summary {
     rebind_symbols((struct rebinding[1]){{"dlsym", my_dlsym, (void*)&orig_dlsym}}, 1);
+}
+
+#pragma mark - svc
+struct AntiDebugTextSegment {
+    uint64_t start;
+    uint64_t end;
+};
+///获取可执行文件的macho文件
+uint32_t getMachOHeaderIndex(void) {
+//    struct mach_header_64 *machHeader = NULL;
+    uint32_t res_index = 0;
+    uint32_t dyld_count = _dyld_image_count();
+    for (uint32_t i = 0; i < dyld_count; i++) {
+        @autoreleasepool {
+            NSString *dyld_image_name = [NSString stringWithCString:_dyld_get_image_name(i) ?: "" encoding:NSUTF8StringEncoding];
+            if ([dyld_image_name isEqualToString:[NSBundle mainBundle].executablePath]) {
+                res_index = i;
+                break;
+            }
+        }
+    }
+    return res_index;
+}
+
+/// 获取Section(__TEXT,__text)段运行时的地址区间
+void getTextSegmentAddress(struct AntiDebugTextSegment *textSegment) {
+    // 读取可执行文件在dyld加载的images里的下标
+    uint32_t appMachOIndex = getMachOHeaderIndex();
+    struct mach_header_64 *header = (struct mach_header_64*)_dyld_get_image_header(appMachOIndex);
+    if (header->magic != MH_MAGIC_64) {
+        return;
+    }
+    uint32_t offset = sizeof(struct mach_header_64);
+    uint32_t ncmds = header->ncmds;
+    while (ncmds--) {
+        // 找到load_command里的__TEXT段
+        struct load_command *lc = (struct load_command *)((uint8_t*)header + offset);
+        offset += lc->cmdsize;
+        if (lc->cmd == LC_SEGMENT_64) {
+            struct segment_command_64 *segment = (struct segment_command_64 *)lc;
+            struct section_64 *section = (struct section_64*)((uint8_t*)segment + sizeof(struct segment_command_64));
+            
+            // 找到当前section是（__TEXT,__text）的段
+            if (!strcmp(section->segname, "__TEXT") && !strcmp(section->sectname, "__text")) {
+                uint64_t memoryAddr = section->addr;
+                textSegment->start = memoryAddr + _dyld_get_image_vmaddr_slide(appMachOIndex);
+                textSegment->end = textSegment->start + section->size;
+                break;
+            }
+            
+        }
+    }
+}
+
+/// 查找svc 0x80相关的中断代码所在的节点，放入数组
+NSMutableArray *getArrayFromLookupSvc(void* target_addr, uint64_t size) {
+    uint8_t *p = (uint8_t*)target_addr;
+    NSMutableArray *ptrArray = [NSMutableArray new];
+    for (uint64_t i = 0; i < size; i++){
+        /*
+         mov x0, #31 -> 0xd28003e0
+         mov x1, #0 -> 0xd2800001
+         mov x2, #0 -> 0xd2800002
+         mov x3, #0 -> 0xd2800003
+         mov x16, #26 -> 0xd2800350
+         svc #0x80  -> 0xd4001001
+         */
+        if (*((uint32_t*)p-4) == 0xd28003e0 && *((uint32_t*)p) == 0xd2800350 && *((uint32_t*)p+1) == 0xd4001001) {//svc->ptrace特征
+            printf("\n🔍🔍🔍查找到svc_ptrace的指令🔍🔍🔍\n");
+            [ptrArray addObject:@((uint64_t)p)];
+        }
+        /*
+         mov x0, #26  -> 0xd2800340
+         mov x1, #31  -> 0xd28003e1
+         mov x2, #0  -> 0xd2800002
+         mov x3, #0  -> 0xd2800003
+         mov x4, #0  -> 0xd2800004
+         mov x16, #0  -> 0xd2800010
+         svc #0x80  -> 0xd4001001
+         */
+        else if (*((uint32_t*)p-5) == 0xd2800340 && *((uint32_t*)p-4) == 0xd28003e1 && *((uint32_t*)p) == 0xd2800010 && *((uint32_t*)p+1) == 0xd4001001) {//svc->syscall->ptrace特征
+            printf("\n🔍🔍🔍查找到svc_syscall_ptrace的指令🔍🔍🔍\n");
+            [ptrArray addObject:@((uint64_t)p)];
+        }
+        p++;
+    }
+    return [ptrArray copy];
+}
+
++ (void)antiDebugCheck_svc_summary {
+    struct AntiDebugTextSegment textSegment;
+    getTextSegmentAddress(&textSegment);
+    NSArray *svc_array = getArrayFromLookupSvc((void *)textSegment.start, textSegment.end - textSegment.start);
+    if (!svc_array.count) {
+        printf("\n❌❌❌svc pointer not found❌❌❌\n");
+        return;
+    }
+    //nop的机器码
+    uint8_t patch_ins_data[4] = {0x1f,0x20,0x03,0xd5};
+    for (int i = 0; i < svc_array.count; i++) {
+        uint8_t *svc_ptr = (uint8_t *)([svc_array[i] unsignedLongLongValue]);
+        bool f = AntiDebug_patchCode(svc_ptr + 4,patch_ins_data, 4);
+        printf("\n🎉🎉🎉patchStatus:%d🎉🎉🎉\n",f);
+    }
 }
 
 @end

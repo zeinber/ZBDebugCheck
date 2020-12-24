@@ -18,7 +18,6 @@
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     ///反调试
@@ -45,6 +44,10 @@
     [AntiDebugCheck antiDebugCheck_dlsym_syscall_ptrace];
     /// dlsym -> syscall -> sysctl
     [AntiDebugCheck antiDebugCheck_dlsym_syscall_sysctl];
+    
+#pragma mark - svc
+    [AntiDebugCheck antiDebugCheck_svc_ptrace];
+    [AntiDebugCheck antiDebugCheck_svc_syscall_ptrace];
     return YES;
 }
 
