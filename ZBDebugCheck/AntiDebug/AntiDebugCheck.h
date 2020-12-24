@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
 
 /**
 * 反调试的手段
@@ -50,10 +49,4 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - isatty
 /// isatty
 + (void)antiDebugCheck_isatty;
-
-//#pragma mark - ioctl
-///// ioctl
-//+ (void)antiDebugCheck_ioctl;
 @end
-
-NS_ASSUME_NONNULL_END

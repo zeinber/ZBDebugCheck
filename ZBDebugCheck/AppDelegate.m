@@ -52,8 +52,6 @@
 #pragma mark - isatty
     [AntiDebugCheck antiDebugCheck_isatty];
     
-//#pragma mark - ioctl
-//    [AntiDebugCheck antiDebugCheck_ioctl];
     return YES;
 }
 

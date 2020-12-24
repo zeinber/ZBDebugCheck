@@ -233,14 +233,4 @@
     }
 }
 
-//#pragma mark - ioctl
-///// ioctl - 有问题，调试时r返回-1
-//+ (void)antiDebugCheck_ioctl {
-//    int r = ioctl(1, TIOCGWINSZ);
-//    if (!r) {
-//        printf("\n❗️❗️❗️ioctl 检测到当前进程被调试❗️❗️❗️\n");
-//        abort();
-//    }
-//}
-
 @end
