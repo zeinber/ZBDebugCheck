@@ -48,6 +48,12 @@
 #pragma mark - svc
     [AntiDebugCheck antiDebugCheck_svc_ptrace];
     [AntiDebugCheck antiDebugCheck_svc_syscall_ptrace];
+    
+#pragma mark - isatty
+    [AntiDebugCheck antiDebugCheck_isatty];
+    
+//#pragma mark - ioctl
+//    [AntiDebugCheck antiDebugCheck_ioctl];
     return YES;
 }
 

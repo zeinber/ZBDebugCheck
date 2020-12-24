@@ -28,6 +28,7 @@ __attribute__((constructor)) static void entry(){
         [AntiDebugCrack antiDebugCheck_syscall_summary];
         [AntiDebugCrack antiDebugCheck_dlsym_summary];
         [AntiDebugCrack antiDebugCheck_svc_summary];
+        [AntiDebugCrack antiDebugCheck_isatty_summary];
     });
 }
 
@@ -259,6 +260,19 @@ NSMutableArray *getArrayFromLookupSvc(void* target_addr, uint64_t size) {
         bool f = AntiDebug_patchCode(svc_ptr + 4,patch_ins_data, 4);
         printf("\n🎉🎉🎉patchStatus:%d🎉🎉🎉\n",f);
     }
+}
+
+#pragma mark - isatty
+typedef int (*isatty_ptr_t)(int);
+static isatty_ptr_t orig_isatty = NULL;
+int my_isatty(int desc);
+int my_isatty(int desc) {
+    printf("\n⚠️⚠️⚠️isatty 被成功绕过⚠️⚠️⚠️\n");
+    return 0;
+}
+
++ (void)antiDebugCheck_isatty_summary {
+    rebind_symbols((struct rebinding[1]){{"isatty", my_isatty, (void*)&orig_isatty}}, 1);
 }
 
 @end

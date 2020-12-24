@@ -51,9 +51,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// isatty
 + (void)antiDebugCheck_isatty;
 
-#pragma mark - ioctl
-/// ioctl
-+ (void)antiDebugCheck_ioctl;
+//#pragma mark - ioctl
+///// ioctl
+//+ (void)antiDebugCheck_ioctl;
 @end
 
 NS_ASSUME_NONNULL_END

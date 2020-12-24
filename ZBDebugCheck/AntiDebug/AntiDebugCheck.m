@@ -226,20 +226,21 @@
 #pragma mark - isatty
 /// isatty
 + (void)antiDebugCheck_isatty {
-    //主要功能是检查设备类型，判断文件描述词是否是为终端机。Apple M1上有误报
+    //主要功能是检查设备类型，判断文件描述词是否是为终端机
     if (isatty(1)) {
         printf("\n❗️❗️❗️isatty 检测到当前进程被调试❗️❗️❗️\n");
         abort();
     }
 }
 
-#pragma mark - ioctl
-/// ioctl
-+ (void)antiDebugCheck_ioctl {
-    if (!ioctl(1, TIOCGWINSZ)) {
-        printf("\n❗️❗️❗️ioctl 检测到当前进程被调试❗️❗️❗️\n");
-        abort();
-    }
-}
+//#pragma mark - ioctl
+///// ioctl - 有问题，调试时r返回-1
+//+ (void)antiDebugCheck_ioctl {
+//    int r = ioctl(1, TIOCGWINSZ);
+//    if (!r) {
+//        printf("\n❗️❗️❗️ioctl 检测到当前进程被调试❗️❗️❗️\n");
+//        abort();
+//    }
+//}
 
 @end
