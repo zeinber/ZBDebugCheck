@@ -13,7 +13,8 @@
 #import <unistd.h>
 #import <sys/sysctl.h>
 #import <sys/syscall.h>
-#import <sys/kdebug_signpost.h>
+//#import <sys/kdebug_signpost.h>
+#import <sys/ioctl.h>
 
 @implementation AntiDebugCheck
 
@@ -151,9 +152,94 @@
         return;
     }
     if (info.kp_proc.p_flag & P_TRACED) {//命中调试标签
-        printf("\n❗️❗️❗️dlsym_syscall_sysctl 检测到当前进程被调试，退出❗️❗️❗️\n");
+        printf("\n❗️❗️❗️dlsym_syscall_sysctl 检测到当前进程被调试❗️❗️❗️\n");
         //为了测试效果就直接abort，其实这里可以使用其他方式或者将状态上传到后端
         abort();
     }
 }
+
+#pragma mark - svc
+/// svc -> ptrace
++ (void)antiDebugCheck_svc_ptrace {
+#ifdef __arm64__
+    printf("\n❗️❗️❗️svc_ptrace 拒绝调试器附加❗️❗️❗️\n");
+    asm volatile(
+                 "mov x0, #31\n"
+                 "mov x1, #0\n"
+                 "mov x2, #0\n"
+                 "mov x3, #0\n"
+                 "mov x16, #26\n"
+                 "svc #0x80\n"//svc执行系统调用ptrace
+                 );
+    printf("\n⚠️⚠️⚠️svc_ptrace 被绕过⚠️⚠️⚠️\n");
+#endif
+}
+
+/// svc -> syscall -> ptrace
++ (void)antiDebugCheck_svc_syscall_ptrace {
+#ifdef __arm64__
+    printf("\n❗️❗️❗️svc_syscall_ptrace 拒绝调试器附加❗️❗️❗️\n");
+    asm volatile(
+                 "mov x0, #26\n"
+                 "mov x1, #31\n"
+                 "mov x2, #0\n"
+                 "mov x3, #0\n"
+                 "mov x4, #0\n"
+                 "mov x16, #0\n"
+                 "svc #0x80\n"//svc执行系统调用syscall
+                 );
+    printf("\n⚠️⚠️⚠️svc_syscall_ptrace 被绕过⚠️⚠️⚠️\n");
+#endif
+}
+
+/// svc -> sysctl
++ (void)antiDebugCheck_svc_sysctl {
+#ifdef __arm64__
+    int name[4];//指定査询信息的数组
+    struct kinfo_proc info;//査询的返回结果
+    size_t infosize = sizeof(struct kinfo_proc);
+    info.kp_proc.p_flag = 0;
+    name[0] = CTL_KERN;
+    name[1] = KERN_PROC;
+    name[2] = KERN_PROC_PID;
+    name[3] = getpid();
+    asm volatile(
+                 "mov x0, %[name_ptr]\n"
+                 "mov x1, #4\n"
+                 "mov x2, %[info_ptr]\n"
+                 "mov x3, %[infosize_ptr]\n"
+                 "mov x4, #0\n"
+                 "mov x5, #0\n"
+                 "mov x16, #202\n"
+                 "svc #0x80\n"
+                 :
+                 : [name_ptr] "r"(name), [info_ptr] "r"(&info),[infosize_ptr] "r"(&infosize)
+                 );
+    if (info.kp_proc.p_flag & P_TRACED) {//命中调试标签
+        printf("\n❗️❗️❗️svc_sysctl 检测到当前进程被调试❗️❗️❗️\n");
+        //为了测试效果就直接abort，其实这里可以使用其他方式或者将状态上传到后端
+        abort();
+    }
+#endif
+}
+
+#pragma mark - isatty
+/// isatty
++ (void)antiDebugCheck_isatty {
+    //主要功能是检查设备类型，判断文件描述词是否是为终端机。Apple M1上有误报
+    if (isatty(1)) {
+        printf("\n❗️❗️❗️isatty 检测到当前进程被调试❗️❗️❗️\n");
+        abort();
+    }
+}
+
+#pragma mark - ioctl
+/// ioctl
++ (void)antiDebugCheck_ioctl {
+    if (!ioctl(1, TIOCGWINSZ)) {
+        printf("\n❗️❗️❗️ioctl 检测到当前进程被调试❗️❗️❗️\n");
+        abort();
+    }
+}
+
 @end
