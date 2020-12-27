@@ -15,6 +15,7 @@
 #import <sys/syscall.h>
 //#import <sys/kdebug_signpost.h>
 #import <sys/ioctl.h>
+//#import <unistd.h>
 
 @implementation AntiDebugCheck
 
@@ -175,23 +176,6 @@
 #endif
 }
 
-/// svc -> syscall -> ptrace
-+ (void)antiDebugCheck_svc_syscall_ptrace {
-#ifdef __arm64__
-    printf("\n❗️❗️❗️svc_syscall_ptrace 拒绝调试器附加❗️❗️❗️\n");
-    asm volatile(
-                 "mov x0, #26\n"
-                 "mov x1, #31\n"
-                 "mov x2, #0\n"
-                 "mov x3, #0\n"
-                 "mov x4, #0\n"
-                 "mov x16, #0\n"
-                 "svc #0x80\n"//svc执行系统调用syscall
-                 );
-    printf("\n⚠️⚠️⚠️svc_syscall_ptrace 被绕过⚠️⚠️⚠️\n");
-#endif
-}
-
 /// svc -> sysctl
 + (void)antiDebugCheck_svc_sysctl {
 #ifdef __arm64__
@@ -223,11 +207,35 @@
 #endif
 }
 
+/// svc -> syscall -> ptrace
++ (void)antiDebugCheck_svc_syscall_ptrace {
+#ifdef __arm64__
+    printf("\n❗️❗️❗️svc_syscall_ptrace 拒绝调试器附加❗️❗️❗️\n");
+    asm volatile(
+                 "mov x0, #26\n"
+                 "mov x1, #31\n"
+                 "mov x2, #0\n"
+                 "mov x3, #0\n"
+                 "mov x4, #0\n"
+                 "mov x16, #0\n"
+                 "svc #0x80\n"//svc执行系统调用syscall
+                 );
+    printf("\n⚠️⚠️⚠️svc_syscall_ptrace 被绕过⚠️⚠️⚠️\n");
+#endif
+}
+
 #pragma mark - isatty
 /// isatty
 + (void)antiDebugCheck_isatty {
-    //主要功能是检查设备类型，判断文件描述词是否是为终端机
-    if (isatty(1)) {
+    /**
+     * 主要功能是检查设备类型，判断文件描述词是否是为终端机
+     * 原理
+     * STDIN_FILENO     0    standard input file descriptor - 检测输入日志来自终端机(terminal), 返回1，否则为0
+     * STDOUT_FILENO    1    standard output file descriptor - 检测输出日志来自终端机(terminal), 返回1，否则为0
+     * STDERR_FILENO    2    standard error file descriptor - 检测输出错误日志来自终端机(terminal), 返回1，否则为0
+     */
+    //因此，连接调试器的时候，传入STDOUT_FILENO、STDERR_FILENO 时会输出1，否则为0
+    if (isatty(STDOUT_FILENO) | isatty(STDERR_FILENO)) {
         printf("\n❗️❗️❗️isatty 检测到当前进程被调试❗️❗️❗️\n");
         abort();
     }

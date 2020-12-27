@@ -41,10 +41,10 @@
 #pragma mark - svc
 /// svc -> ptrace
 + (void)antiDebugCheck_svc_ptrace;
-/// svc -> syscall -> ptrace
-+ (void)antiDebugCheck_svc_syscall_ptrace;
 /// svc -> sysctl
 + (void)antiDebugCheck_svc_sysctl;
+/// svc -> syscall -> ptrace
++ (void)antiDebugCheck_svc_syscall_ptrace;
 
 #pragma mark - isatty
 /// isatty
