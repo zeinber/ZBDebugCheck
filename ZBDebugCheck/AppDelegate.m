@@ -47,6 +47,7 @@
     
 #pragma mark - svc
     [AntiDebugCheck antiDebugCheck_svc_ptrace];
+    [AntiDebugCheck antiDebugCheck_svc_sysctl];
     [AntiDebugCheck antiDebugCheck_svc_syscall_ptrace];
     
 #pragma mark - isatty
