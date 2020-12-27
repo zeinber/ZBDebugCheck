@@ -55,9 +55,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C39F32A2598590600CAC879 /* Crack */ = {
+			isa = PBXGroup;
+			children = (
+				9C8EC372258DF596007530E9 /* AntiDebugCrack.h */,
+				9C8EC36F258DF596007530E9 /* AntiDebugCrack.m */,
+			);
+			path = Crack;
+			sourceTree = "<group>";
+		};
+		9C39F32B2598596600CAC879 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				9C8EC371258DF596007530E9 /* ptrace.h */,
+				9C39F32A2598590600CAC879 /* Crack */,
+				9C8EC36D258DF596007530E9 /* Check */,
+				9C8EC369258DF587007530E9 /* Fishhook */,
+				9CB7C3F12594675A00FFB28C /* Patch */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		9C8EC344258DF30E007530E9 = {
 			isa = PBXGroup;
 			children = (
+				9C39F32B2598596600CAC879 /* Core */,
 				9C8EC34F258DF30E007530E9 /* ZBDebugCheck */,
 				9C8EC34E258DF30E007530E9 /* Products */,
 			);
@@ -78,9 +100,6 @@
 				9C8EC351258DF30E007530E9 /* AppDelegate.m */,
 				9C8EC353258DF30E007530E9 /* SceneDelegate.h */,
 				9C8EC354258DF30E007530E9 /* SceneDelegate.m */,
-				9C8EC36D258DF596007530E9 /* AntiDebug */,
-				9C8EC369258DF587007530E9 /* fishhook */,
-				9CB7C3F12594675A00FFB28C /* patch */,
 				9C8EC356258DF30E007530E9 /* ViewController.h */,
 				9C8EC357258DF30E007530E9 /* ViewController.m */,
 				9C8EC359258DF30E007530E9 /* Main.storyboard */,
@@ -92,34 +111,31 @@
 			path = ZBDebugCheck;
 			sourceTree = "<group>";
 		};
-		9C8EC369258DF587007530E9 /* fishhook */ = {
+		9C8EC369258DF587007530E9 /* Fishhook */ = {
 			isa = PBXGroup;
 			children = (
-				9C8EC36A258DF587007530E9 /* fishhook.c */,
 				9C8EC36B258DF587007530E9 /* fishhook.h */,
+				9C8EC36A258DF587007530E9 /* fishhook.c */,
 			);
-			path = fishhook;
+			path = Fishhook;
 			sourceTree = "<group>";
 		};
-		9C8EC36D258DF596007530E9 /* AntiDebug */ = {
+		9C8EC36D258DF596007530E9 /* Check */ = {
 			isa = PBXGroup;
 			children = (
-				9C8EC372258DF596007530E9 /* AntiDebugCrack.h */,
-				9C8EC36F258DF596007530E9 /* AntiDebugCrack.m */,
 				9C8EC36E258DF596007530E9 /* AntiDebugCheck.h */,
 				9C8EC370258DF596007530E9 /* AntiDebugCheck.m */,
-				9C8EC371258DF596007530E9 /* ptrace.h */,
 			);
-			path = AntiDebug;
+			path = Check;
 			sourceTree = "<group>";
 		};
-		9CB7C3F12594675A00FFB28C /* patch */ = {
+		9CB7C3F12594675A00FFB28C /* Patch */ = {
 			isa = PBXGroup;
 			children = (
 				9CB7C3F22594676B00FFB28C /* AntiDebugPatch.h */,
 				9CB7C3F32594676B00FFB28C /* AntiDebugPatch.m */,
 			);
-			path = patch;
+			path = Patch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
