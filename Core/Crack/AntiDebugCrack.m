@@ -215,7 +215,7 @@ NSMutableArray *getArrayFromLookupSvc(void* target_addr, uint64_t size) {
     uint8_t *p = (uint8_t*)target_addr;
     NSMutableArray *ptrArray = [NSMutableArray new];
     for (uint64_t i = 0; i < size; i++){
-        /*
+        /**
          mov x0, #31 -> 0xd28003e0
          mov x1, #0 -> 0xd2800001
          mov x2, #0 -> 0xd2800002
@@ -227,7 +227,7 @@ NSMutableArray *getArrayFromLookupSvc(void* target_addr, uint64_t size) {
             printf("\n🔍🔍🔍查找到svc_ptrace的指令🔍🔍🔍\n");
             [ptrArray addObject:@((uint64_t)p)];
         }
-        /*
+        /**
          mov x0, #26  -> 0xd2800340
          mov x1, #31  -> 0xd28003e1
          mov x2, #0  -> 0xd2800002
