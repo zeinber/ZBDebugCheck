@@ -2,6 +2,7 @@
 iOS 反调试和反反调试的代码，内附一个测试工程。
 
 ## 代码目录
+```c
 Core
 ├── Check (反调试代码)
 │   ├── AntiDebugCheck.h
@@ -16,6 +17,7 @@ Core
 │   ├── AntiDebugPatch.h
 │   └── AntiDebugPatch.m
 └── ptrace.h (ptrace 头文件)
+```
 
 ## 介绍
 demo 中按原理分以下3类，
